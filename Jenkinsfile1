@@ -1,0 +1,20 @@
+pipeline {
+    agent any
+    stages{
+        stage('checkout'){
+            steps{
+                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/mknaik1997/dockerjenkin.git']])
+            }
+        }
+        stage('build'){
+            steps{
+                sh 'mvn package'
+            }
+        }
+        stage('Deploy to Tomcat'){
+            steps{
+                deploy adapters: [tomcat9(credentialsId: 'b5d2f0a2-1cc6-47e7-8c57-dd9498acde39', path: '', url: 'http://3.110.86.249:8080/')], contextPath: null, war: '**/*.war'
+            }
+        }
+    }
+}
